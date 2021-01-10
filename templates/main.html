@@ -8,15 +8,22 @@
     <title>Hard Rock Polls</title>
 </head>
 <body>
+<div id ='options' class = 'options'>
 <h1>{{poll_data.question}}</h1>
 <h2> Please choose one band</h2>
 <form method="POST">
 {% for element in poll_data.fields %}
-{{element}}
-<input type="radio" name="result.key">
+<input type="radio" value ={{element}} name="result">
+    {{element}} <br>
 {% endfor %}
  <button type="submit">Vote!</button>
     </form>
+</div>
+<div id="results" class = "results">
+    {% for element in data %}
+{{element}}
+    {% endfor %}
+</div>
 <script>
 
   {% with messages = get_flashed_messages() %}
