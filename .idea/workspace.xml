@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="f2746136-5c3a-4123-8cfb-bddb9bf2c42e" name="Default Changelist" comment="">
+<<<<<<< HEAD
       <change afterPath="$PROJECT_DIR$/Dockerfile" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/polls/__init__.py" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/polls/app.py" afterDir="false" />
@@ -11,6 +12,13 @@
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app.py" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/test_app.py" beforeDir="false" afterPath="$PROJECT_DIR$/polls/test_app.py" afterDir="false" />
+=======
+      <change afterPath="$PROJECT_DIR$/test_app.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/app.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/main.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/main.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test.py" beforeDir="false" />
+>>>>>>> refs/remotes/origin/main
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -45,6 +53,7 @@
       </list>
     </option>
   </component>
+<<<<<<< HEAD
   <component name="RunManager" selected="Python.app (1)">
     <configuration name="app (1)" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="flask_polls" />
@@ -67,6 +76,9 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+=======
+  <component name="RunManager" selected="Python tests.Unittests in test_app.py">
+>>>>>>> refs/remotes/origin/main
     <configuration name="app" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="flask_polls" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -119,14 +131,22 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="_new_additionalArguments" value="&quot;&quot;" />
+<<<<<<< HEAD
       <option name="_new_target" value="&quot;$PROJECT_DIR$/polls/test_app.py&quot;" />
+=======
+      <option name="_new_target" value="&quot;$PROJECT_DIR$/test_app.py&quot;" />
+>>>>>>> refs/remotes/origin/main
       <option name="_new_targetType" value="&quot;PATH&quot;" />
       <method v="2" />
     </configuration>
     <recent_temporary>
       <list>
+<<<<<<< HEAD
         <item itemvalue="Python.app (1)" />
         <item itemvalue="Python.main" />
+=======
+        <item itemvalue="Python tests.Unittests in test_app.py" />
+>>>>>>> refs/remotes/origin/main
         <item itemvalue="Python.app" />
         <item itemvalue="Python tests.Unittests in test_app.py" />
       </list>
