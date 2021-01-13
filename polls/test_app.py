@@ -1,7 +1,7 @@
 import unittest
 import requests
 from flask import Flask
-from app import app
+from polls.app import app
 url = 'http://127.0.0.1:5000/'
 
 
