@@ -14,8 +14,10 @@ def create_app():
     login_manager.init_app(app)
     app.config.update(DATABASE=os.path.join(app.root_path, 'polls.db'))
     app.config['SECRET_KEY'] = 'secret-key-IS_the-lalale'
-    app.config['SQLALCHEMY_DATABASE_URI'] =  "sqlite:///polls.db"
+    app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///polls.db"
+    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+    db.init_app(app)
     with app.app_context():
-        db.init_app(app)
+        db.create_all()
     return app
 

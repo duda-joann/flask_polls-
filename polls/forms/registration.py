@@ -1,8 +1,16 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField
-from wtforms.validators import InputRequired, Length, EqualTo, ValidationError
-
-from .models import Admin
+from wtforms import (
+                    StringField,
+                    PasswordField,
+                    SubmitField
+                    )
+from wtforms.validators import (
+                                InputRequired,
+                                Length,
+                                EqualTo,
+                                ValidationError
+                                )
+from polls.models import Admin
 
 
 class RegistrationForm(FlaskForm):
@@ -32,25 +40,7 @@ class RegistrationForm(FlaskForm):
     )
     submit_button = SubmitField('Create')
 
-
-    def validate_username(self, username):
+    def validate_username(self, username) -> None:
         user_object = Admin.query.filter_by(username=username.data).first()
         if user_object:
             raise ValidationError("Username already exists. Please, chose different username.")
-
-# LOGIN
-
-class LoginForm(FlaskForm):
-    """ Login Form """
-
-    username = StringField(
-        'username_label',
-        validators=[InputRequired(message="Username required")
-                    ]
-    )
-    password = PasswordField(
-        'password_label',
-        validators=[InputRequired(message="Password required")
-                    ]
-    )
-    submit_button = SubmitField('Login')

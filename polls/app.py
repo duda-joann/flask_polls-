@@ -3,17 +3,23 @@ from flask import (render_template,
                    flash,
                    redirect,
                    url_for)
+from werkzeug.wrappers import Response
 from flask_login import (LoginManager,
                          login_user,
+                         login_required,
+                         logout_user
 )
 from passlib.hash import pbkdf2_sha256
 from polls.main import create_app
 from polls.models import Admin
 
-from polls.forms import (
+from polls.forms.registration import (
                     RegistrationForm,
-                    LoginForm)
+                    )
+from polls.forms.login import LoginForm
 from polls.db import db
+
+
 app = create_app()
 login_manager = LoginManager(app)
 
@@ -39,14 +45,14 @@ def load_user(user):
 
 
 @app.route('/register', methods=['GET', 'POST'])
-def register():
+def register() -> Response:
 
     form = RegistrationForm()
 
     if form.validate_on_submit():
         username = form.data['username']
         password = form.data['password']
-        mail = form.data['email']
+        mail = form.data['mail']
         hashed_pswd = pbkdf2_sha256.hash(password)
         user = Admin(
             username=username,
@@ -63,7 +69,7 @@ def register():
 
 
 @app.route('/login', methods=['GET', 'POST'])
-def login():
+def login() -> Response:
 
     login_form = LoginForm()
     if login_form.validate_on_submit():
@@ -76,7 +82,7 @@ def login():
 
 
 @app.route('/', methods=['POST', 'GET'])
-def home():
+def home() -> Response:
     if request.method == 'POST':
         vote = request.form.get('result')
         if not vote:
@@ -86,6 +92,14 @@ def home():
             results[vote] += 1
         flash('Thanks for votes!')
     return render_template('main.html', poll_data=poll_data, data=results)
+
+
+@app.route('/logout', methods = ['GET'])
+@login_required
+def logout() -> Response:
+    logout_user()
+    flash('You are logout successfully')
+    return redirect(url_for('login'))
 
 
 if __name__ == '__main__':
