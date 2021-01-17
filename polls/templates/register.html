@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% from 'macro.html' import displayField %}
+{% block title %} Registration {% endblock %}
+
+{% block content %}
+<h1> Please register to create your own polls!</h1>
+<div class="form-input">
+    <form action="{{ url_for('register')}}" , method="POST">
+        <p5>Username</p5>
+        {{ displayField(form.username, autocomplete="off",
+    autofocus=true, class="form-control") }}
+        <p5>Mail</p5>
+        {{ displayField(form.mail, autocomplete="off",
+    autofocus=true, class="form-control") }}
+        <p5>Password</p5>
+        {{ displayField(form.password, class="form-control") }}
+        <p5>Retype Password</p5>
+        {{ displayField(form.confirm_password, class="form-control") }}
+        <div class="btn">
+            <input type="submit" value="Create" class="button-submit">
+        </div>
+</div>
+        {{ form.csrf_token }}
+    </form>
+</div>
+{% endblock %}
+<div class="register-bottom">
+    <p4>Already registered? <a class="link" href={{url_for('login')}}>Login here</a></p4>
+</div>
