@@ -23,9 +23,10 @@ class Question(db.Model):
     Model for questions
     """
     __tablename__ = "question"
-    question_id = db.Column(db.Integer, primary_key=True)
-    question_content = db.Column(db.String(200), nullable = False)
-    date_of_addition = db.Column(db.DateTime(default = datetime.now()))
+    id = db.Column(db.Integer, primary_key=True)
+    content = db.Column(db.String(200), nullable = False)
+    date_of_addition = db.Column(db.DateTime, default = datetime.now)
+    options = db.relationship('Options', lazy=True)
 
     def __repr__(self):
         return f'{self.question_id}, {self.question_content}'
@@ -36,9 +37,10 @@ class Options(db.Model):
     Model for options
     """
     __tablename__ = "options"
-    question = db.ForeignKey(Question)
+    id = db.Column(db.Integer, primary_key = True)
     choice = db.Column(db.String(200))
     votes = db.Column(db.Integer, default=0)
+    question_id = db.Column(db.Integer, db.ForeignKey('question.id'))
 
     def __repr__(self):
-        return f'{self.choice}'
+        return f'{self.choice}, {self.votes}'
