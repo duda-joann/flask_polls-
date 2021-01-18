@@ -2,7 +2,6 @@ import os
 
 from flask import Flask
 from flask_login import LoginManager
-
 from polls.db import db
 
 login_manager = LoginManager()

@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% from 'macro.html' import displayField %}
+
+{% block title %}New Poll{% endblock %}
+
+{% block content %}
+
+<h1>New Poll</h1>
+
+<p>Add you new poll !</p>
+
+<div class="form-input">
+    <form action="{{url_for('new_poll')}}" method="POST">
+        {{ form.csrf_token }}
+        <p5>Add new polls</p5>
+        {{ displayField(form.question, autocomplete="off",
+    autofocus=true) }}
+        <p5>Option1</p5>
+        {{ displayField(form.option1) }}
+        <p5>Option2</p5>
+        {{ displayField(form.option2) }}
+        <p5>Option3</p5>
+        {{ displayField(form.option3) }}
+        <p5>Option4</p5>
+        {{ displayField(form.option4) }}
+
+        <div class="btn">
+            <input type="submit" value="Add" class="button-submit">
+        </div>
+    </form>
+</div>
+
+{% endblock %}

@@ -10,7 +10,7 @@ from wtforms.validators import (
                                 EqualTo,
                                 ValidationError
                                 )
-from polls.models import Admin
+from polls.models.admin import Admin
 
 
 class RegistrationForm(FlaskForm):

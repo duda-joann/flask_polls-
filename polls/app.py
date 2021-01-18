@@ -1,3 +1,5 @@
+from passlib.hash import pbkdf2_sha256
+
 from flask import (render_template,
                    request,
                    flash,
@@ -9,34 +11,21 @@ from flask_login import (LoginManager,
                          login_required,
                          logout_user
 )
-from passlib.hash import pbkdf2_sha256
-from polls.main import create_app
-from polls.models import Admin
 
+from polls.main import create_app
+from polls.models.admin import Admin
+from polls.models.question import Question
+from polls.models.options import Options
 from polls.forms.registration import (
                     RegistrationForm,
                     )
 from polls.forms.login import LoginForm
+from polls.forms.question import QuestionForm
 from polls.db import db
 
 
 app = create_app()
 login_manager = LoginManager(app)
-
-poll_data = {
-    'question': 'What do you prefer?',
-    'fields': ['Saxon',
-               'Budgie',
-               'Nazareth',
-               'Uriah Heep',
-               'Deep Purple'
-               ]}
-
-results = {'Saxon': 0,
-           'Budgie': 0,
-           'Nazareth': 0,
-           'Uriah Heep': 0,
-           'Deep Purple': 0}
 
 
 @login_manager.user_loader
@@ -77,24 +66,41 @@ def login() -> Response:
             username=login_form.username.data).first()
         login_user(user_object)
         return redirect(url_for('/'))
-
     return render_template('login.html', form=login_form)
 
 
 @app.route('/', methods=['POST', 'GET'])
-def home() -> Response:
-    if request.method == 'POST':
-        vote = request.form.get('result')
-        if not vote:
-            flash('Please vote!')
-            return redirect(url_for('home'))
-        if vote:
-            results[vote] += 1
-        flash('Thanks for votes!')
-    return render_template('main.html', poll_data=poll_data, data=results)
+def main() -> Response:
+    polls = Question.query.all()
+    return render_template('main.html', polls=polls)
 
 
-@app.route('/logout', methods = ['GET'])
+@app.route('/add-new-poll/', methods = ['POST', 'GET'])
+def new_poll() -> Response:
+    form = QuestionForm()
+    if form.validate_on_submit():
+        question = form.data['question']
+        option1 = form.data['option1']
+        option2 = form.data['option2']
+        option3 = form.data['option3']
+        option4 = form.data['option4']
+        question = Question(
+                            content = question,
+                            options = [Options(choice = option1),
+                                       Options(choice = option2),
+                                       Options(choice = option3),
+                                       Options(choice =option4)]
+        )
+        db.session.add(question)
+        db.session.commit()
+
+        flash('Your poll is added now')
+        return redirect(url_for('main'))
+
+    return render_template('newpoll.html', form = form)
+
+
+@app.route('/logout/', methods = ['GET'])
 @login_required
 def logout() -> Response:
     logout_user()

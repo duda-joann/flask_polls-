@@ -1,37 +1,11 @@
-<!doctype html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Hard Rock Polls</title>
-</head>
-<body>
-<div id ='options' class = 'options'>
-<h1>{{poll_data.question}}</h1>
-<h2> Please choose one band</h2>
-<form method="POST">
-{% for element in poll_data.fields %}
-<input type="radio" value ={{element}} name="result">
-    {{element}} <br>
+{% extends 'base.html' %}
+
+{% block content %}
+{% if polls %}
+{% for poll in polls %}
+    {{polls.question}}
 {% endfor %}
- <button type="submit">Vote!</button>
-    </form>
-</div>
-<div id="results" class = "results">
-    {% for element in data %}
-{{element}}
-    {% endfor %}
-</div>
-<script>
-
-  {% with messages = get_flashed_messages() %}
-  {% for message in messages %}
-  alert('{{message}}');
-  {% endfor %}
-  {% endwith %}
-
-</script>
-</body>
-</html>
+{% else %}
+<p> No Polls available</p>
+{% endif %}
+{% endblock %}
