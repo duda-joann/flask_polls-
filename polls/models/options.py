@@ -1,4 +1,11 @@
 from polls.db import db
+from flask import (
+                flash,
+                redirect,
+                url_for,
+                request
+                )
+from .question import Question
 
 class Options(db.Model):
     """
@@ -12,3 +19,5 @@ class Options(db.Model):
 
     def __repr__(self):
         return f'{self.choice}, {self.votes}'
+
+

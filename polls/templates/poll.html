@@ -8,9 +8,12 @@
     <title>Hard Rock Polls</title>
 </head>
 <body>
+ <a href="{{ url_for('login') }}">log in</a>
+ <a href="{{ url_for('logout') }}">log out</a>
+
 <div id ='options' class = 'options'>
 <h1>{{poll_data.question}}</h1>
-<form method="POST">
+<form method="POST" action="{{ url_for('detail_view', id = poll_data.id) }}">
 {% for element in poll_data.options %}
 <input type="radio" value ={{element}} name="result">
     {{element}} <br>
@@ -19,7 +22,7 @@
     </form>
 </div>
 <div id="results" class = "results">
-    {% for element in data %}
+    {% for element in stats %}
 {{element}}
     {% endfor %}
 </div>

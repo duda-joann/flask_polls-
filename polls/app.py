@@ -3,13 +3,15 @@ from passlib.hash import pbkdf2_sha256
 from flask import (render_template,
                    flash,
                    redirect,
-                   url_for)
+                   request,
+                   url_for
+                   )
 from werkzeug.wrappers import Response
 from flask_login import (LoginManager,
                          login_user,
                          login_required,
                          logout_user
-)
+                        )
 from polls.main import create_app
 from polls.models.admin import Admin
 from polls.models.question import Question
@@ -25,6 +27,10 @@ from polls.db import db
 app = create_app()
 login_manager = LoginManager(app)
 
+
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template('404.html'), 404
 
 @login_manager.user_loader
 def load_user(user):
@@ -73,10 +79,21 @@ def main() -> Response:
     return render_template('main.html', polls=polls)
 
 
-@app.route('/polls/<int:id>')
+@app.route('/polls/<int:id>', methods=['POST', 'GET'])
 def detail_view(id: int) -> Response:
     poll = Question.query.filter_by(id = id).first()
-    return render_template('poll.html', poll_data = poll)
+    if request.method == 'POST':
+        vote = request.form.get('result')
+        if not vote:
+            flash('Please vote!')
+            return redirect(url_for('/polls/<int:id>'))
+        if vote:
+            option = Options.query.filter_by(question_id=id, choice=vote).first()
+            option.votes += 1
+            db.session.commit()
+
+    result = Options.query.filter_by(question_id=id).all()
+    return render_template('poll.html', poll_data = poll, stats = result)
 
 
 @app.route('/add-new-poll/', methods = ['POST', 'GET'])
