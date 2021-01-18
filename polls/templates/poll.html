@@ -11,7 +11,7 @@
 <div id ='options' class = 'options'>
 <h1>{{poll_data.question}}</h1>
 <form method="POST">
-{% for element in poll_data.fields %}
+{% for element in poll_data.options %}
 <input type="radio" value ={{element}} name="result">
     {{element}} <br>
 {% endfor %}

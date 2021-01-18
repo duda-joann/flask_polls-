@@ -3,7 +3,7 @@
 {% block content %}
 {% if polls %}
 {% for poll in polls %}
-    {{polls.question}}
+<a href="polls/{{poll.id}}">{{poll.question}}</a> </br>
 {% endfor %}
 {% else %}
 <p> No Polls available</p>

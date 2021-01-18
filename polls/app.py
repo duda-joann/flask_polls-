@@ -1,7 +1,6 @@
 from passlib.hash import pbkdf2_sha256
 
 from flask import (render_template,
-                   request,
                    flash,
                    redirect,
                    url_for)
@@ -11,7 +10,6 @@ from flask_login import (LoginManager,
                          login_required,
                          logout_user
 )
-
 from polls.main import create_app
 from polls.models.admin import Admin
 from polls.models.question import Question
@@ -33,7 +31,7 @@ def load_user(user):
     return Admin.get(user)
 
 
-@app.route('/register', methods=['GET', 'POST'])
+@app.route('/register/', methods=['GET', 'POST'])
 def register() -> Response:
 
     form = RegistrationForm()
@@ -57,7 +55,7 @@ def register() -> Response:
     return render_template('register.html', form=form)
 
 
-@app.route('/login', methods=['GET', 'POST'])
+@app.route('/login/', methods=['GET', 'POST'])
 def login() -> Response:
 
     login_form = LoginForm()
@@ -75,6 +73,12 @@ def main() -> Response:
     return render_template('main.html', polls=polls)
 
 
+@app.route('/polls/<int:id>')
+def detail_view(id: int) -> Response:
+    poll = Question.query.filter_by(id = id).first()
+    return render_template('poll.html', poll_data = poll)
+
+
 @app.route('/add-new-poll/', methods = ['POST', 'GET'])
 def new_poll() -> Response:
     form = QuestionForm()
@@ -85,7 +89,7 @@ def new_poll() -> Response:
         option3 = form.data['option3']
         option4 = form.data['option4']
         question = Question(
-                            content = question,
+                            question = question,
                             options = [Options(choice = option1),
                                        Options(choice = option2),
                                        Options(choice = option3),
