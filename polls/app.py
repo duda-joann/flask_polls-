@@ -118,13 +118,38 @@ def new_poll() -> Response:
 
         flash('Your poll is added now')
         return redirect(url_for('main'))
-
     return render_template('newpoll.html', form = form)
+
 
 @app.route('/update-poll/<int:id>')
 def update_poll(id):
-    pass
+    poll = Question.query.filter_by(id = id).first()
+    form = QuestionForm(
+                        question=poll.question,
+                        option1=poll.options[0],
+                        option2=poll.options[1],
+                        option3=poll.options[2],
+                        option4=poll.options[3],
+                        )
+    if form.validate_on_submit():
+        question = form.data['question']
+        option1 = form.data['option1']
+        option2 = form.data['option2']
+        option3 = form.data['option3']
+        option4 = form.data['option4']
+        question = Question(
+                question=question,
+                options=[Options(choice=option1),
+                         Options(choice=option2),
+                         Options(choice=option3),
+                         Options(choice=option4)]
+            )
+        db.session.update(question)
+        db.session.commit()
 
+        flash('Your poll is update now')
+        return redirect(url_for('polls/<int:id>'))
+    return render_template('update_poll.html', poll_data = poll, form = form)
 
 @app.route('/delete/<int:id>')
 def delete_poll(id):
