@@ -32,6 +32,7 @@ login_manager = LoginManager(app)
 def page_not_found(e):
     return render_template('404.html'), 404
 
+
 @login_manager.user_loader
 def load_user(user):
     return Admin.get(user)
@@ -119,6 +120,18 @@ def new_poll() -> Response:
         return redirect(url_for('main'))
 
     return render_template('newpoll.html', form = form)
+
+@app.route('/update-poll/<int:id>')
+def update_poll(id):
+    pass
+
+
+@app.route('/delete/<int:id>')
+def delete_poll(id):
+    poll = Question.query.get_or_404(id)
+    db.session.delete(poll)
+    db.session.commit()
+    return redirect(url_for('main'))
 
 
 @app.route('/logout/', methods = ['GET'])
