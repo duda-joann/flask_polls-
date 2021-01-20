@@ -11,6 +11,7 @@ class Question(db.Model):
     question = db.Column(db.String(200), nullable = False)
     date_of_addition = db.Column(db.DateTime, default = datetime.now)
     options = db.relationship('Options', lazy=True)
+    votes = db.relationship('Vote', lazy=True)
 
     def __repr__(self):
-        return f'{self.question_id}, {self.question_content}'
+        return f'{self.question_id}, {self.question_content}', {self.options}

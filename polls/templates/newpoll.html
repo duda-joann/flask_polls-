@@ -12,7 +12,7 @@
 <div class="form-input">
     <form action="{{url_for('new_poll')}}" method="POST">
         {{ form.csrf_token }}
-        <p5>Add new polls</p5>
+        <p5>Question</p5>
         {{ displayField(form.question, autocomplete="off",
     autofocus=true) }}
         <p5>Option1</p5>

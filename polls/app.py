@@ -16,6 +16,7 @@ from polls.main import create_app
 from polls.models.admin import Admin
 from polls.models.question import Question
 from polls.models.options import Options
+from polls.models.vote import Vote
 from polls.forms.registration import (
                     RegistrationForm,
                     )
@@ -87,11 +88,13 @@ def detail_view(id: int) -> Response:
         vote = request.form.get('result')
         if not vote:
             flash('Please vote!')
-            return redirect(url_for('/polls/<int:id>'))
+            return redirect(url_for(f'/polls/{id}'))
         if vote:
-            option = Options.query.filter_by(question_id=id, choice=vote).first()
-            option.votes += 1
+            vote = Vote(vote=vote,
+                        question_id = id)
+            db.session.add(vote)
             db.session.commit()
+            flash(f"You voted  successfully!")
 
     result = Options.query.filter_by(question_id=id).all()
     return render_template('poll.html', poll_data = poll, stats = result)
@@ -137,19 +140,20 @@ def update_poll(id):
         option2 = form.data['option2']
         option3 = form.data['option3']
         option4 = form.data['option4']
-        question = Question(
+        poll = Question(
                 question=question,
                 options=[Options(choice=option1),
                          Options(choice=option2),
                          Options(choice=option3),
                          Options(choice=option4)]
             )
-        db.session.update(question)
+        db.session.add(poll)
         db.session.commit()
 
         flash('Your poll is update now')
-        return redirect(url_for('polls/<int:id>'))
+        return redirect(url_for(f'polls/{id}'))
     return render_template('update_poll.html', poll_data = poll, form = form)
+
 
 @app.route('/delete/<int:id>')
 def delete_poll(id):

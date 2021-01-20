@@ -1,6 +1,8 @@
 {% extends 'base.html' %}
 
 {% block content %}
+<a href="/add-new-poll/"> Add new poll </a> <br>
+<a href="/delete/{{polls.id}}"> Remove Poll </a> <br>
 {% if polls %}
 {% for poll in polls %}
 <a href="polls/{{poll.id}}">{{poll.question}}</a> </br>
