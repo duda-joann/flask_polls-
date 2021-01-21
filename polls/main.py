@@ -7,9 +7,13 @@ from polls.db import db
 
 login_manager = LoginManager()
 
+base_dir = os.path.abspath(os.path.dirname(__file__))
+UPLOAD_FOLDER = os.path.join(base_dir, 'uploads')
+
 
 def create_app():
     app = Flask(__name__)
+    app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
     app.config['SECRET_KEY'] = 'blebleble'
     login_manager.init_app(app)
     app.config.update(DATABASE=os.path.join(app.root_path, 'polls.db'))

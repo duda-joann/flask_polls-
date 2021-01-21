@@ -9,6 +9,7 @@ class Question(db.Model):
     __tablename__ = "question"
     id = db.Column(db.Integer, primary_key=True)
     question = db.Column(db.String(200), nullable = False)
+    cover = db.Column(db.String(250), nullable = False)
     date_of_addition = db.Column(db.DateTime, default = datetime.now)
     options = db.relationship('Options', lazy=True)
     votes = db.relationship('Vote', lazy=True)

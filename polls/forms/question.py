@@ -1,7 +1,8 @@
 from flask_wtf import FlaskForm
 from wtforms import (
                     StringField,
-                    SubmitField)
+                    SubmitField,
+                    FileField)
 from wtforms.validators import InputRequired
 
 
@@ -11,6 +12,7 @@ class QuestionForm(FlaskForm):
                           'question',
                           validators=[InputRequired(message='Missing question')
                                       ])
+    cover = FileField('cover', validators=[InputRequired(message = 'Missing photo')])
     option1 = StringField(
                         'option1',
                          validators=[InputRequired(message='Missing option')

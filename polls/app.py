@@ -1,3 +1,4 @@
+import os
 from passlib.hash import pbkdf2_sha256
 
 from flask import (render_template,
@@ -12,6 +13,8 @@ from flask_login import (LoginManager,
                          login_required,
                          logout_user
                         )
+from werkzeug.utils import secure_filename
+
 from polls.main import create_app
 from polls.models.admin import Admin
 from polls.models.question import Question
@@ -23,6 +26,7 @@ from polls.forms.registration import (
 from polls.forms.login import LoginForm
 from polls.forms.question import QuestionForm
 from polls.db import db
+from polls.helpers import allowed_file
 
 
 app = create_app()
@@ -103,14 +107,25 @@ def detail_view(id: int) -> Response:
 @app.route('/add-new-poll/', methods = ['POST', 'GET'])
 def new_poll() -> Response:
     form = QuestionForm()
-    if form.validate_on_submit():
+    if form.validate_on_submit() and 'cover' in request.files:
+        if 'cover' not in request.files:
+            flash('No file')
+            return redirect(request.url)
+
+        cover = request.files['cover']
+        if cover and allowed_file(cover.filename):
+            filename = secure_filename(cover.filename)
+            cover.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+
         question = form.data['question']
         option1 = form.data['option1']
         option2 = form.data['option2']
         option3 = form.data['option3']
         option4 = form.data['option4']
+
         question = Question(
                             question = question,
+                            cover = os.path.join(app.config['UPLOAD_FOLDER'], cover.filename),
                             options = [Options(choice = option1),
                                        Options(choice = option2),
                                        Options(choice = option3),
