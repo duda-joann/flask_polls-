@@ -10,7 +10,7 @@ from wtforms.validators import (
                                 EqualTo,
                                 ValidationError
                                 )
-from polls.models.admin import Admin
+from polls.models.users import Users
 
 
 class RegistrationForm(FlaskForm):
@@ -40,7 +40,14 @@ class RegistrationForm(FlaskForm):
     )
     submit_button = SubmitField('Create')
 
-    def validate_username(self, username) -> None:
-        user_object = Admin.query.filter_by(username=username.data).first()
-        if user_object:
-            raise ValidationError("Username already exists. Please, chose different username.")
+    def validate(self):
+        initial_validation = super(RegistrationForm, self).validate()
+        if not initial_validation:
+            return False
+        user = Users.query.filter_by(mail=self.mail.data).first()
+        if user:
+            self.mail.errors.append("Email already registered")
+            return False
+        return True
+
+

@@ -3,7 +3,9 @@ import os
 from flask import Flask
 from flask_bootstrap import Bootstrap
 from flask_login import LoginManager
+
 from polls.db import db
+from secrets import User, Password
 
 login_manager = LoginManager()
 
@@ -20,6 +22,13 @@ def create_app():
     app.config['SECRET_KEY'] = 'secret-key-IS_the-lalale'
     app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///polls.db"
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+    app.config['SECURITY_PASSWORD_SALT'] = 'VanillaSkinDelight'
+    app.config['MAIL_SERVER'] = 'smtp.gmail.com'
+    app.config['MAIL_PORT'] = 465
+    app.config['MAIL_USE_SSL'] = True
+    app.config['MAIL_USERNAME'] = User
+    app.config['MAIL_PASSWORD'] = Password
+    app.config['MAIL_DEFAULT_SENDER']=User
     Bootstrap(app)
     db.init_app(app)
     with app.app_context():

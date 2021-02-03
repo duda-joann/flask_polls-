@@ -1,5 +1,6 @@
 import os
 from passlib.hash import pbkdf2_sha256
+from datetime import datetime
 
 from flask import (render_template,
                    flash,
@@ -10,13 +11,15 @@ from flask import (render_template,
 from werkzeug.wrappers import Response
 from flask_login import (LoginManager,
                          login_user,
+                         current_user,
                          login_required,
                          logout_user
                         )
+from flask_mail import Mail
 from werkzeug.utils import secure_filename
 
 from polls.main import create_app
-from polls.models.admin import Admin
+from polls.models.users import Users
 from polls.models.question import Question
 from polls.models.options import Options
 from polls.models.vote import Vote
@@ -27,9 +30,12 @@ from polls.forms.login import LoginForm
 from polls.forms.question import QuestionForm
 from polls.db import db
 from polls.helpers import allowed_file
+from polls.user_token import SendingMails
 
 
 app = create_app()
+mail = Mail(app)
+
 login_manager = LoginManager(app)
 
 
@@ -40,7 +46,27 @@ def page_not_found(e):
 
 @login_manager.user_loader
 def load_user(user):
-    return Admin.get(user)
+    return Users.get(user)
+
+
+@app.route('/confirm-email/<token>')
+@login_required
+def confirm_email(token):
+    try:
+        email = SendingMails(app, mail).confirm_token(token)
+    except:
+        flash('The confirmation link is invalid or has expired.', 'danger')
+
+    user = Users.query.filter_by(mail=email).first_or_404()
+    if user.confirmed:
+        flash('Account already confirmed. Please login.', 'success')
+    else:
+        user.confirmed = True
+        user.confirmed_on = datetime.now()
+        db.session.add(user)
+        db.session.commit()
+        flash('You have confirmed your account. Thanks!', 'success')
+    return redirect(url_for('main'))
 
 
 @app.route('/register/', methods=['GET', 'POST'])
@@ -53,18 +79,33 @@ def register() -> Response:
         password = form.data['password']
         mail = form.data['mail']
         hashed_pswd = pbkdf2_sha256.hash(password)
-        user = Admin(
+        user = Users(
             username=username,
             mail = mail,
-            password=hashed_pswd)
+            password=hashed_pswd,
+            confirmed = False)
         db.session.add(user)
         db.session.commit()
 
-        flash('Registered seccusfully! Please login :)', 'success')
+        token = SendingMails(app,mail).generate_confirmation_token(user.mail)
+        confirm_url = url_for('confirm_email', token=token, _external=True)
+        html = render_template('activate.html', confirm_url=confirm_url)
+        subject = "Please confirm your email"
+        SendingMails(app, mail).send_email(user.mail, subject, html)
+        flash('A confirmation email has been sent via email. :)', 'success')
 
-        return redirect(url_for('login'))
+        return redirect(url_for('unconfirmed'))
 
     return render_template('register.html', form=form)
+
+
+app.route('/unconfirmed')
+@login_required
+def unconfirmed():
+    if current_user.confirmed:
+        return redirect('main.home')
+    flash('Please confirm your account!', 'warning')
+    return render_template('user/unconfirmed.html')
 
 
 @app.route('/login/', methods=['GET', 'POST'])
@@ -72,7 +113,7 @@ def login() -> Response:
 
     login_form = LoginForm()
     if login_form.validate_on_submit():
-        user_object = Admin.query.filter_by(
+        user_object = Users.query.filter_by(
             username=login_form.username.data).first()
         login_user(user_object)
         return redirect(url_for('/'))
@@ -171,7 +212,7 @@ def update_poll(id):
 
 
 @app.route('/delete/<int:id>')
-def delete_poll(id):
+def delete_poll(id) -> Response:
     poll = Question.query.get_or_404(id)
     db.session.delete(poll)
     db.session.commit()
