@@ -23,10 +23,9 @@ from polls.models.users import Users
 from polls.models.question import Question
 from polls.models.options import Options
 from polls.models.vote import Vote
-from polls.forms.registration import (
-                    RegistrationForm,
-                    )
+from polls.forms.registration import RegistrationForm
 from polls.forms.login import LoginForm
+from polls.forms.password_change import PasswordChangeForm
 from polls.forms.question import QuestionForm
 from polls.db import db
 from polls.helpers import allowed_file
@@ -35,7 +34,6 @@ from polls.user_token import SendingMails
 
 app = create_app()
 mail = Mail(app)
-
 login_manager = LoginManager(app)
 
 
@@ -47,6 +45,12 @@ def page_not_found(e):
 @login_manager.user_loader
 def load_user(user):
     return Users.get(user)
+
+
+@app.route('/', methods=['POST', 'GET'])
+def main() -> Response:
+    polls = Question.query.all()
+    return render_template('main.html', polls=polls)
 
 
 @app.route('/confirm-email/<token>')
@@ -96,10 +100,10 @@ def register() -> Response:
 
         return redirect(url_for('unconfirmed'))
 
-    return render_template('register.html', form=form)
+    return render_template('users/register.html', form=form)
 
 
-app.route('/unconfirmed')
+@app.route('/unconfirmed')
 @login_required
 def unconfirmed():
     if current_user.confirmed:
@@ -108,22 +112,34 @@ def unconfirmed():
     return render_template('user/unconfirmed.html')
 
 
+@app.route('/reset-password/', methods = ["GET", "POST"])
+def reset_password():
+    form = PasswordChangeForm()
+    if form.validate_on_submit():
+        email = form.data['email']
+        password = form.data['password']
+        confirm_password = form.data['repeat_password']
+        if password != confirm_password:
+            return redirect(request.url)
+
+        user = Users.query.filter_by(mail=email).first()
+        if user:
+            user.password = password
+            db.session.commit()
+            return redirect(url_for('login'))
+
+    return render_template('users/change_password.html', form=form)
+
+
 @app.route('/login/', methods=['GET', 'POST'])
 def login() -> Response:
-
     login_form = LoginForm()
     if login_form.validate_on_submit():
         user_object = Users.query.filter_by(
             username=login_form.username.data).first()
         login_user(user_object)
         return redirect(url_for('/'))
-    return render_template('login.html', form=login_form)
-
-
-@app.route('/', methods=['POST', 'GET'])
-def main() -> Response:
-    polls = Question.query.all()
-    return render_template('main.html', polls=polls)
+    return render_template('users/login.html', form=login_form)
 
 
 @app.route('/polls/<int:id>', methods=['POST', 'GET'])
@@ -142,7 +158,7 @@ def detail_view(id: int) -> Response:
             flash(f"You voted  successfully!")
 
     result = Options.query.filter_by(question_id=id).all()
-    return render_template('poll.html', poll_data = poll, stats = result)
+    return render_template('polls/poll.html', poll_data = poll, stats = result)
 
 
 @app.route('/add-new-poll/', methods = ['POST', 'GET'])
@@ -177,7 +193,7 @@ def new_poll() -> Response:
 
         flash('Your poll is added now')
         return redirect(url_for('main'))
-    return render_template('newpoll.html', form = form)
+    return render_template('polls/newpoll.html', form = form)
 
 
 @app.route('/update-poll/<int:id>')
@@ -208,11 +224,11 @@ def update_poll(id):
 
         flash('Your poll is update now')
         return redirect(url_for(f'polls/{id}'))
-    return render_template('update_poll.html', poll_data = poll, form = form)
+    return render_template('polls/update_poll.html', poll_data = poll, form = form)
 
 
 @app.route('/delete/<int:id>')
-def delete_poll(id) -> Response:
+def delete_poll(id: int) -> Response:
     poll = Question.query.get_or_404(id)
     db.session.delete(poll)
     db.session.commit()

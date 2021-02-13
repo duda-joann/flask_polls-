@@ -8,7 +8,6 @@ from wtforms.validators import (
                                 InputRequired,
                                 Length,
                                 EqualTo,
-                                ValidationError
                                 )
 from polls.models.users import Users
 

@@ -138,4 +138,4 @@ dmypy.json
 cython_debug/
 
 # Secrets details. Please do not use it.
-.secrets
+./secrets.py 
