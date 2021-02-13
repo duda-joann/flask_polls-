@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from flask_login import UserMixin
-from polls.app.db import db
+from app.db import db
 
 
 class Users(UserMixin, db.Model):
@@ -10,6 +10,7 @@ class Users(UserMixin, db.Model):
     """
 
     __tablename__ = "users"
+    __table_args__ = {'extend_existing': True}
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(30), unique=True, nullable=False)
     admin = db.Column(db.Boolean, nullable=False, default=False)

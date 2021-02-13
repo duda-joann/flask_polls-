@@ -1,5 +1,5 @@
-import polls.models.users
-import polls.models.options
-import polls.models.question
-import polls.models.vote
+import models.users
+import models.options
+import models.question
+import models.vote
 

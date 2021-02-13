@@ -1,5 +1,5 @@
 from datetime import datetime
-from polls.app.db import db
+from app.db import db
 
 
 class Question(db.Model):

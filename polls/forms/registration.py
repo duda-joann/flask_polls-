@@ -9,7 +9,7 @@ from wtforms.validators import (
                                 Length,
                                 EqualTo,
                                 )
-from polls.models.users import Users
+from models.users import Users
 
 
 class RegistrationForm(FlaskForm):

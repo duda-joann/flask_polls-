@@ -1,7 +1,7 @@
 from wtforms.validators import (
                         ValidationError
 )
-from polls.models.users import Users
+from models.users import Users
 from passlib.hash import pbkdf2_sha256
 
 

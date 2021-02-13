@@ -1,4 +1,4 @@
-from polls.app.db import db
+from app.db import db
 
 class Options(db.Model):
     """
