@@ -18,7 +18,7 @@ from flask_login import (LoginManager,
 from flask_mail import Mail
 from werkzeug.utils import secure_filename
 
-from polls.main import create_app
+from polls.app.main import create_app
 from polls.models.users import Users
 from polls.models.question import Question
 from polls.models.options import Options
@@ -27,9 +27,9 @@ from polls.forms.registration import RegistrationForm
 from polls.forms.login import LoginForm
 from polls.forms.password_change import PasswordChangeForm
 from polls.forms.question import QuestionForm
-from polls.db import db
-from polls.helpers import allowed_file
-from polls.user_token import SendingMails
+from polls.app.db import db
+from polls.app.helpers import allowed_file
+from polls.app.user_token import SendingMails
 
 
 app = create_app()
@@ -123,8 +123,9 @@ def reset_password():
             return redirect(request.url)
 
         user = Users.query.filter_by(mail=email).first()
+        hashed_pswd = pbkdf2_sha256.hash(password)
         if user:
-            user.password = password
+            user.password = hashed_pswd
             db.session.commit()
             return redirect(url_for('login'))
 
@@ -241,6 +242,11 @@ def logout() -> Response:
     logout_user()
     flash('You are logout successfully')
     return redirect(url_for('login'))
+
+
+@app.route('/contact', methods=['GET', 'POST'])
+def contact():
+    pass
 
 
 if __name__ == '__main__':

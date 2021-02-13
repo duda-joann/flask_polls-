@@ -4,8 +4,8 @@ from flask import Flask
 from flask_bootstrap import Bootstrap
 from flask_login import LoginManager
 
-from polls.db import db
-from secrets import User, Password
+from .db import db
+from polls.my_secrets import User, Password
 
 login_manager = LoginManager()
 

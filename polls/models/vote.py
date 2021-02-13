@@ -1,5 +1,5 @@
 from datetime import datetime
-from polls.db import db
+from polls.app.db import db
 
 
 class Vote(db.Model):

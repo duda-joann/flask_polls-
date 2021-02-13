@@ -1,5 +1,5 @@
 from datetime import datetime
-from polls.db import db
+from polls.app.db import db
 
 
 class Question(db.Model):
@@ -16,3 +16,5 @@ class Question(db.Model):
 
     def __repr__(self):
         return f'{self.question_id}, {self.question_content}', {self.options}
+
+

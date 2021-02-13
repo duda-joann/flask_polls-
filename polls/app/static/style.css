@@ -1,0 +1,18 @@
+
+* {
+    margin: 0;
+    padding: 0;
+    font-family: sans-serif, Roboto, Arial, bold;
+    box-sizing: border-box;
+}
+
+body {
+background-color: white;
+color: black;
+font-size: 3vh;
+}
+
+
+header {
+background-img: 'static/images/header.jpg';
+}
