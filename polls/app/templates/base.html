@@ -9,31 +9,36 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css"
           rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl"
           crossorigin="anonymous">
+    <link type="text/css" rel="stylesheet" href="{{ url_for('static', filename ='stylesheets/style.css') }}"/>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js"
             integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0"
             crossorigin="anonymous"></script>
-    <link type="text/css" rel="stylesheet" href="{{ url_for('static', filename ='stylesheets/style.css') }}"/>
 
     <title>{% block title %}{%endblock %}</title>
 </head>
 <body>
 
-{% block header %}
-    <div class="text-justify blockquote text-center">
+<header>
+    <div id ="header">
         <h1>Welcome to  Polls <h1>
         <h2> Everyday you can find there  a new poll <h2>
     </div>
-{% endblock %}
+</header>
 
 {% block navbar %}
 <nav class="nav nav-pills flex-column flex-sm-row navbar-dark bg-dark">
-  <a class="flex-sm-fill text-sm-center nav-link active" aria-current="page" href="#">Main</a>
+  <a class="flex-sm-fill text-sm-center nav-link active" aria-current="page" href= {{url_for('main')}}>Main</a>
   <a class="flex-sm-fill text-sm-center nav-link" href= {{ url_for('register') }}>Register</a>
   <a class="flex-sm-fill text-sm-center nav-link" href={{ url_for('login') }}>Login</a>
   <a class="flex-sm-fill text-sm-center nav-link" href= {{ url_for('contact') }} >Contact</a>
 </nav>
 {% endblock %}
-
+{% block user %}
+<div id ="url">
+<a href="{{ url_for('login') }}">log in</a>
+ <a href="{{ url_for('logout') }}">log out</a>
+</div>
+{% endblock %}
 {% block content %}
 {% endblock %}
 </body>

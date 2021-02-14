@@ -2,7 +2,8 @@ from flask_wtf import FlaskForm
 
 from wtforms import (
                     StringField,
-                    SubmitField
+                    SubmitField,
+                    PasswordField
                     )
 from wtforms.validators import (
                     InputRequired,
@@ -16,10 +17,10 @@ class PasswordChangeForm(FlaskForm):
     email = StringField('email_label',
                         validators=[InputRequired(message='Please provide email')]
                         )
-    password = StringField('password_label',
+    password = PasswordField('password_label',
                            validators=[Length(min=8)]
                            )
-    repeat_password = StringField('password_confirm_label',
+    repeat_password = PasswordField('password_confirm_label',
                                   validators=[EqualTo('password', message='Passwords must match')]
                                   )
 

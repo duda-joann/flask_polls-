@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% from 'macro.html' import displayField %}
+
+{% block title %}Contact {% endblock %}
+
+{% block content %}
+ <a href="{{ url_for('login') }}">log in</a>
+ <a href="{{ url_for('logout') }}">log out</a>
+
+<h1>Contact</h1>
+
+<p> In case of any queries feel free to contact with us!</p>
+
+<div class="form-input">
+    <form action="{{url_for('contact')}}" method="POST">
+        {{ form.csrf_token }}
+        <p5>Name</p5>
+        {{ displayField(form.name, autocomplete="off",class="form-control" ) }}
+        <p5>Mail</p5>
+        {{ displayField(form.mail) }}
+        <p5>Message</p5>
+        {{ displayField(form.message) }}
+        <div class="btn">
+            <input type="submit" value="Send" class="button-submit">
+        </div>
+    </form>
+</div>
+
+{% endblock %}

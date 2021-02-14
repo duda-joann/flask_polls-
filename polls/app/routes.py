@@ -27,6 +27,7 @@ from forms.registration import RegistrationForm
 from forms.login import LoginForm
 from forms.password_change import PasswordChangeForm
 from forms.question import QuestionForm
+from forms.contact import ContactForm
 from app.db import db
 from app.helpers import allowed_file
 from app.user_token import SendingMails
@@ -243,7 +244,9 @@ def logout() -> Response:
     return redirect(url_for('login'))
 
 
-@app.route('/contact', methods=['GET', 'POST'])
+@app.route('/contact/', methods=['GET', 'POST'])
 def contact():
-    pass
+    form = ContactForm
+    
+    return render_template('contact.html', form = form)
 
