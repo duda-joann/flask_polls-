@@ -33,12 +33,14 @@
   <a class="flex-sm-fill text-sm-center nav-link" href= {{ url_for('contact') }} >Contact</a>
 </nav>
 {% endblock %}
+
 {% block user %}
 <div id ="url">
 <a href="{{ url_for('login') }}">log in</a>
  <a href="{{ url_for('logout') }}">log out</a>
 </div>
 {% endblock %}
+
 {% block content %}
 {% endblock %}
 </body>

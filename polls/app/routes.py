@@ -34,6 +34,7 @@ from app.user_token import SendingMails
 from app.app import app
 
 mail = Mail(app)
+mail.init_app(app)
 login_manager = LoginManager(app)
 
 
@@ -158,8 +159,12 @@ def detail_view(id: int) -> Response:
             db.session.commit()
             flash(f"You voted  successfully!")
 
-    result = Options.query.filter_by(question_id=id).all()
-    return render_template('polls/poll.html', poll_data = poll, stats = result)
+    results = Options.query\
+        .join(Vote, Options.id == Vote.option_id)\
+        .add_columns(Vote.vote)\
+        .filter_by(Options.question_id == id).all().count()
+
+    return render_template('polls/poll.html', poll_data = poll, stats = results)
 
 
 @app.route('/add-new-poll/', methods = ['POST', 'GET'])
@@ -222,7 +227,6 @@ def update_poll(id):
             )
         db.session.add(poll)
         db.session.commit()
-
         flash('Your poll is update now')
         return redirect(url_for(f'polls/{id}'))
     return render_template('polls/update_poll.html', poll_data = poll, form = form)
@@ -246,7 +250,16 @@ def logout() -> Response:
 
 @app.route('/contact/', methods=['GET', 'POST'])
 def contact():
-    form = ContactForm
-    
+    form = ContactForm()
+    if form.validate_on_submit():
+        name = form.data['name']
+        mail = form.data['mail']
+        text = form.data['message']
+
+        html = render_template('message.html', content=text, name=name)
+        subject = f'Notification from polls'
+        SendingMails(app, mail).send_email(app.config['MAIL_USERNAME'], subject, html)
+        flash('Your message was sent to administration. :)', 'success')
+
     return render_template('contact.html', form = form)
 

@@ -10,7 +10,7 @@ class ContactForm(FlaskForm):
 
     """Contact form for user"""
     name = StringField('name')
-    email = StringField('mail',
+    mail = StringField('mail',
                     validators=[
                         InputRequired(message='Please provide mail'),
                         ])

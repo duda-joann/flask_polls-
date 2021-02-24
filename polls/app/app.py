@@ -5,6 +5,10 @@ from flask_bootstrap import Bootstrap
 from flask_login import LoginManager
 
 from .db import db
+from models.users import Users
+from models.question import Question
+from models.options import Options
+from models.vote import Vote
 from my_secrets import User, Password
 
 login_manager = LoginManager()
