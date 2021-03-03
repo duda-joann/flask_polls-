@@ -1,6 +1,7 @@
 import os
 from passlib.hash import pbkdf2_sha256
 from datetime import datetime
+from collections import Counter
 
 from flask import (render_template,
                    flash,
@@ -16,6 +17,7 @@ from flask_login import (LoginManager,
                          logout_user
                         )
 from flask_mail import Mail
+from flask_uploads import send_from_directory
 from werkzeug.utils import secure_filename
 
 from app import app
@@ -144,27 +146,39 @@ def login() -> Response:
     return render_template('users/login.html', form=login_form)
 
 
+@app.route('/polls/<filename>')
+def uploaded(filename):
+    return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
+
+
+@app.route('/results/<id>/<selected_value>/', methods = ['POST', 'GET'])
+def click(selected_value, id):
+    if selected_value:
+        votes = Vote(vote=1,
+                     option_id=selected_value)
+        db.session.add(votes)
+        db.session.commit()
+        flash(f"You voted  successfully!")
+
+        results = db.session.query(Options.choice, Vote.vote,)\
+            .filter_by(question_id=id).\
+            outerjoin(Vote, Options.id == Vote.option_id).group_by(Options.choice).all()
+
+        return render_template('polls/results.html', results = results)
+    return redirect(url_for('detail_view'))
+
+
 @app.route('/polls/<int:id>', methods=['POST', 'GET'])
-def detail_view(id: int) -> Response:
+def detail_view(id: int,vote=None) -> Response:
     poll = Question.query.filter_by(id = id).first()
     if request.method == 'POST':
         vote = request.form.get('result')
-        if not vote:
-            flash('Please vote!')
-            return redirect(url_for(f'/polls/{id}'))
-        if vote:
-            vote = Vote(vote=vote,
-                        question_id = id)
-            db.session.add(vote)
-            db.session.commit()
-            flash(f"You voted  successfully!")
+        return redirect(url_for('click', selected_value=vote, id = id))
+    if not vote:
+        flash('Please vote!')
+        return render_template('polls/poll.html', poll_data = poll)
 
-    results = Options.query\
-        .join(Vote, Options.id == Vote.option_id)\
-        .add_columns(Vote.vote)\
-        .filter_by(Options.question_id == id).all().count()
-
-    return render_template('polls/poll.html', poll_data = poll, stats = results)
+    return render_template('polls/poll.html', poll_data = poll)
 
 
 @app.route('/add-new-poll/', methods = ['POST', 'GET'])
@@ -188,7 +202,7 @@ def new_poll() -> Response:
 
         question = Question(
                             question = question,
-                            cover = os.path.join(app.config['UPLOAD_FOLDER'], cover.filename),
+                            cover = secure_filename(cover.filename),
                             options = [Options(choice = option1),
                                        Options(choice = option2),
                                        Options(choice = option3),

@@ -11,11 +11,5 @@ class Options(db.Model):
     question_id = db.Column(db.Integer, db.ForeignKey('question.id'))
     votes = db.relationship('Vote', backref='options', lazy='dynamic')
 
-    def __init__(self, id, choice, question_id, votes):
-        self.id = id
-        self.choice = choice
-        self.question_id = question_id
-        self.votes = votes
-
     def __repr__(self):
-        return f'{self.choice}, {self.votes}'
+        return f'{self.id}, {self.choice},{self.question_id}, {self.votes}'

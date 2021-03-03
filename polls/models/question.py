@@ -13,12 +13,5 @@ class Question(db.Model):
     date_of_addition = db.Column(db.DateTime, default = datetime.now)
     options = db.relationship('Options', backref ='question', lazy='dynamic')
 
-    def __init__(self, id, question, cover, date_of_addition, options):
-        self.id = id
-        self.question = question
-        self.cover = cover
-        self.date_of_addition= date_of_addition
-        self.options = options
-
     def __repr__(self):
-        return f'{self.question_id}, {self.question_content}', {self.options}
+        return f'{self.id}, {self.cover}, {self.question}, {self.options}'

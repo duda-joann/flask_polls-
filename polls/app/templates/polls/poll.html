@@ -1,33 +1,25 @@
-<!doctype html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Hard Rock Polls</title>
+{% extends 'base.html' %}
+
 </head>
+{% block content %}
 <body>
- <a href="{{ url_for('login') }}">log in</a>
- <a href="{{ url_for('logout') }}">log out</a>
 
 <div id ='options' class = 'options'>
 <h1>{{poll_data.question}}</h1>
-    <img src="{{ poll_data.cover }}"  class="img-fluid" alt="Responsive image">
+    <img src= "{{url_for('uploaded', filename = poll_data.cover)}}"  class="img-fluid" alt="Responsive image">
+
 <form method="POST" action="{{ url_for('detail_view', id = poll_data.id) }}">
-{% for element in poll_data.options %}
-<input type="radio" value ={{element}} name="result">
-    {{element}} <br>
+    {{ poll_data.csrf_token }}
+    {% for element in poll_data.options %}
+    <input type="radio" value ={{element.id}} name="result">
+    {{element.choice}} <br>
 {% endfor %}
-<a href="/delete/{{poll_data.id}}"> Remove Poll </a>
- <button type="submit">Vote!</button>
+
+ <button type="submit">Vote!</button> <br>
+    <a href="/delete/{{poll_data.id}}"> Remove Poll </a>
     </form>
 </div>
-<div id="results" class = "results">
-    {% for element in stats %}
-{{element}} <br>
-    {% endfor %}
-</div>
+
 <script>
 
   {% with messages = get_flashed_messages() %}
@@ -37,5 +29,4 @@
   {% endwith %}
 
 </script>
-</body>
-</html>
+{% endblock %}

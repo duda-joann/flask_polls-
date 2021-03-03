@@ -18,3 +18,4 @@ def check_confirmed(func):
         return function(*args, **kwargs)
 
     return func
+
