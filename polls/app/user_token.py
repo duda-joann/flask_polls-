@@ -1,5 +1,6 @@
 from itsdangerous import URLSafeTimedSerializer
 from flask_mail import Message
+from app.routes import mail
 
 
 class SendingMails:
@@ -31,4 +32,4 @@ class SendingMails:
             html=template,
             sender=self.app.config['MAIL_DEFAULT_SENDER']
         )
-        self.mail.send(msg)
+        mail.send(msg)

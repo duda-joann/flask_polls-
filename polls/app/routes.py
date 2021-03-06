@@ -1,7 +1,6 @@
 import os
 from passlib.hash import pbkdf2_sha256
 from datetime import datetime
-from collections import Counter
 
 from flask import (render_template,
                    flash,
@@ -32,13 +31,13 @@ from forms.question import QuestionForm
 from forms.contact import ContactForm
 from app.db import db
 from app.helpers import allowed_file
-from app.user_token import SendingMails
 from app.app import app
 
 mail = Mail(app)
 mail.init_app(app)
 login_manager = LoginManager(app)
 
+from app.user_token import SendingMails
 
 @app.errorhandler(404)
 def page_not_found(e):
@@ -96,7 +95,7 @@ def register() -> Response:
 
         token = SendingMails(app,mail).generate_confirmation_token(user.mail)
         confirm_url = url_for('confirm_email', token=token, _external=True)
-        html = render_template('activate.html', confirm_url=confirm_url)
+        html = render_template('users/activate.html', confirm_url=confirm_url)
         subject = "Please confirm your email"
         SendingMails(app, mail).send_email(user.mail, subject, html)
         flash('A confirmation email has been sent via email. :)', 'success')
@@ -162,7 +161,7 @@ def click(selected_value, id):
 
         results = db.session.query(Options.choice, Vote.vote,)\
             .filter_by(question_id=id).\
-            outerjoin(Vote, Options.id == Vote.option_id).group_by(Options.choice).all()
+            outerjoin(Vote, Options.id == Vote.option_id).all()
 
         return render_template('polls/results.html', results = results)
     return redirect(url_for('detail_view'))

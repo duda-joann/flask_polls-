@@ -36,12 +36,14 @@
 
 {% block user %}
 <div id ="url">
-<a href="{{ url_for('login') }}">log in</a>
- <a href="{{ url_for('logout') }}">log out</a>
+<a href="{{ url_for('login') }}">Come on, log in...</a> <br>
+ <a href="{{ url_for('logout') }}">Please don't log out...</a> <br>
+    <a href="{{ url_for('reset_password') }}">Forgot Password? I'll help you!</a> <br>
 </div>
 {% endblock %}
 
 {% block content %}
+
 {% endblock %}
 </body>
 </html>

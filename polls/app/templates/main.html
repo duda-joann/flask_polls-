@@ -1,8 +1,14 @@
 {% extends 'base.html' %}
 
 {% block content %}
+<H1> Here are your polls to votes </H1>
+{% if current_user.is_authenticated %}
+Hi {{ current_user.name }}!
+{% endif %}
+
 <a href="/add-new-poll/"> Add new poll </a> <br>
 <a href="/delete/{{polls.id}}"> Remove Poll </a> <br>
+
 {% if polls %}
 {% for poll in polls %}
 <a href="polls/{{poll.id}}">{{poll.question}}</a> </br>
